@@ -1,7 +1,10 @@
 # AzureRoles
 Set Azure subscription to managed
 
-Run from Azure Cloud shell.  https://shell.azure.com
+1. start Azure Cloud Shell https://shell.azure.com
+2. Autenticate with subscription owner
+3. Replace  AdminAgentID with partrners ID. Get from Indirect Reseller Experience in ALSO Cloud Marketplace
+
 
 $AdminAgentID=""
 
