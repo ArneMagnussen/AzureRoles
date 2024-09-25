@@ -1,6 +1,7 @@
 # AzureRoles
+Set Azure subscription to managed
 
-# Run from Azure Cloud shell.  https://shell.azure.com
+Run from Azure Cloud shell.  https://shell.azure.com
 
 $AdminAgentID=""
 
