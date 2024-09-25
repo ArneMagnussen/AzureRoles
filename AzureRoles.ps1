@@ -2,7 +2,8 @@
 
 [CmdletBinding()] 
 param (
-    $ResellerAdminAgentID
+    [Parameter(Mandatory=$True)]
+    [string]$ResellerAdminAgentID
 )
 
 $ErrorActionPreference = "Stop"
@@ -101,9 +102,11 @@ $result  | Format-Table
 
 
 <#
+$ResellerAdminAgentID="dc2aa490-5b61-47a4-880a-02bcb829da93"
 $AdminAgentID="dc2aa490-5b61-47a4-880a-02bcb829da93"
-$ScriptFromGitHub = Invoke-WebRequest "https://raw.githubusercontent.com/ArneMagnussen/AzureRoles/refs/heads/main/AzureRoles.ps1 -ResellerAdminAgentID $AdminAgentID"
-Invoke-Expression $($ScriptFromGitHub.Content)
+$Params=@("-ResellerAdminAgentID", $AdminAgentID)
+$ScriptFromGitHub = Invoke-WebRequest -uri https://raw.githubusercontent.com/ArneMagnussen/AzureRoles/refs/heads/main/AzureRoles.ps1
+Invoke-Expression $($ScriptFromGitHub.Content) $Params
 
 https://raw.githubusercontent.com/ArneMagnussen/AzureRoles/edit/main/AzureRoles.ps1
 https://raw.githubusercontent.com/ArneMagnussen/AzureRoles/refs/heads/main/AzureRoles.ps1
