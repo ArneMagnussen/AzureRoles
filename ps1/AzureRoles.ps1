@@ -6,12 +6,11 @@ param (
     [Parameter(Mandatory=$True)]
     [string]$ResellerAdminAgentID
 ) 
-
+#>
 param (
-    [Parameter]
     [string]$ResellerAdminAgentID
 )
-#>
+
 
 $ErrorActionPreference = "Stop"
 
