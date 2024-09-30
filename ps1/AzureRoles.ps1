@@ -1,21 +1,12 @@
 # Azure cloud shell
 
 [CmdletBinding()] 
-<#
-param (
-    [Parameter(Mandatory=$True)]
-    [string]$ResellerAdminAgentID
-) 
-#>
 param (
     [string]$ResellerAdminAgentID
 )
 
-
 $ErrorActionPreference = "Stop"
 
-# Reseller Admin Agent group ID --- Example dc2aa490-xxxx-yyyy-zzzz-02bcb829da93
-# Available in ACMP in Indirect Reseller Excperience Servcie 
 
 # AdminAgent Foreign Principal Group role to be assignet to Admin Agents --- Owner Role recommended
 $AssignRole = "Owner"
