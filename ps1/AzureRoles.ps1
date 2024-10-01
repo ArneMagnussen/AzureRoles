@@ -2,10 +2,66 @@
 
 [CmdletBinding()] 
 param (
-    [string]$ResellerAdminAgentID
+    [string]$ResellerAdminAgentID,
+    [string]$TenantID
 )
 
 $ErrorActionPreference = "Stop"
+
+try {
+    $sessioninfo = Get-CloudDrive
+    if ($sessioninfo) {
+        Write-Host "Running in Cloud Shell mode..." -ForegroundColor Green
+    }   
+}
+catch {
+    Write-Host "Running in local PowerShell session mode..." -ForegroundColor Yellow
+    
+    #Required modules
+    $RequiredPowershellVersion = "7.4.5"
+    $RequiredModules = @(
+        @{
+            "ModuleName"           = "Az.Accounts"
+            "MinimalModuleVersion" = "3.0.4"
+        },
+        @{
+            "ModuleName"           = "Az.Resources"
+            "MinimalModuleVersion" = "7.4.0"
+        }
+    )
+
+    #Check powershell version
+    if ($PSVersionTable.PSVersion -lt [version]$RequiredPowershellVersion) {
+        Write-Host "Please update Powershell to version $RequiredPowershellVersion or higher" -ForegroundColor Red
+        exit
+    }
+
+    #Check modules
+    foreach ($RequiredModule in $RequiredModules) {
+        if (-not (Get-InstalledModule -Name $RequiredModule.ModuleName -MinimumVersion $RequiredModule.MinimalModuleVersion -ErrorAction SilentlyContinue)) {
+            Write-Host "Please install module $($RequiredModule.ModuleName), minimal version $($RequiredModule.MinimalModuleVersion)" -ForegroundColor Red
+            exit
+        }
+    }
+
+    #Get TenantID 
+    if (-not $TenantID) {
+        $tenantID = Read-host -Prompt "Input Customer Microsoft TenantID - format 63264b6b-xxxx-xxxx-xxxx-4f43d916ac89"
+        if (-not [guid]::TryParse($tenantID, $([ref][guid]::Empty))) {
+            Write-host "Invalid Tenant ID, exiting"
+            Exit 1
+        }
+    }
+
+    try {
+        Connect-AzAccount -tenant $tenantID -SkipContextPopulation
+    }
+    catch {
+        Write-host "Not able to login"
+        Exit 1
+    }
+
+}
 
 
 # AdminAgent Foreign Principal Group role to be assignet to Admin Agents --- Owner Role recommended
@@ -39,7 +95,7 @@ foreach ($sub in $subsciptions) {
 $sublist = Read-Host -Prompt "Type in the number of the subscription you want to use (comma separat)"
 $subArray = $sublist -split ","
 $subsciptionsForUse = @()
-if($sublist -eq "0") {
+if ($sublist -eq "0") {
     $subsciptionsForUse = $subsciptions
 }
 else {
@@ -49,8 +105,8 @@ else {
 }
 
 $AdminAgentIDs = @()
-$AdminAgentIDs += New-Object -TypeName psobject -Property @{Partner="ALSO"; ID=$ALSOPACAdminAgentID}
-$AdminAgentIDs += New-Object -TypeName psobject -Property @{Partner="Partner"; ID=$ResellerAdminAgentID}
+$AdminAgentIDs += New-Object -TypeName psobject -Property @{Partner = "ALSO"; ID = $ALSOPACAdminAgentID }
+$AdminAgentIDs += New-Object -TypeName psobject -Property @{Partner = "Partner"; ID = $ResellerAdminAgentID }
 
 $result = @()
 $row = @()
